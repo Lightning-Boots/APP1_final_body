@@ -1,5 +1,6 @@
 # définir le plateau de jeu
-board = ["|" for i in range(13)]
+n=int(input("nombre d'allumettes"))
+board = ["|" for i in range(n)]
 print(board)
 
 # L'ordinateur joue aléatoirement
@@ -9,6 +10,20 @@ import random
 def play_random_move(board):
   a = random.randint(1, 3)
   return a, board[a:]
+
+def play_random_move_V2(board):
+  a = random.randint(1, 3)
+  if len(board)-a>=0:
+    return a, board[a:]
+  elif len(board)==2:
+    a = random.randint(1, 2)
+  elif len(board)==1:
+    return "Tu as perdu"
+  else len(board)==0:
+    return "Fin, tu as gagné"
+  return a, board[a:]
+
+
 
 
 a, newboard = play_random_move(board)
