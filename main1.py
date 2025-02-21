@@ -35,7 +35,7 @@ class MainWindow(QMainWindow):
 
         self.label = [QLabel(self) for i in range(n)]
         self.labels = QHBoxLayout()
-        self.labels.setSpacing(0)0
+        self.labels.setSpacing(0)
         self.movie = QMovie("vibe-cat.gif")
 
         for i in range(len(self.label)):
