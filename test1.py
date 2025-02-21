@@ -32,7 +32,7 @@ def trouver_meilleur_coup(allumettes, nb):
 def jouer_nim():
     allumettes = int(input("Entrez le nombre d'allumettes sur le plateau : "))
     nb_allumettes = int(input("Combien d'allumettes peut-on retirer à chaque coups : "))
-    est_tour_joueur = random.choice([True, False])  # le joueur commence
+    est_tour_joueur = random.choice([True, False])  # soit le jouer soit l'ia qui  commence
     while allumettes > 0:
         print(f"Allumettes restantes : {allumettes}")
         if est_tour_joueur:
