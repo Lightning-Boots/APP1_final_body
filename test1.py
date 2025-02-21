@@ -46,6 +46,7 @@ def jouer_nim():
     if est_tour_joueur:
         print("Le joueur gagne")
     else:
+        
         print("L'IA' gagne ")
 #lancement du jeu
 jouer_nim()
