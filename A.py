@@ -26,16 +26,23 @@ class MainWindow(QMainWindow):
 
 
 
+
         self.text = QLabel(self)
         self.text.setText("Nombre de Bâton : " + str(n))
         self.text.setGeometry(0, self.height()//2, self.width(), 73)
         self.text.setStyleSheet("color: white; font-size : 25px; background-color: none")
         self.text.setAlignment(QtCore.Qt.AlignCenter)
 
+        self.band = QWidget(self)
+        self.band.setStyleSheet("background-color: grey;")
+        self.rect = QHBoxLayout(self.band)
+        self.rect.setSpacing(0)
+        self.band.setGeometry(0, 0, self.width(), self.height() // 3+40)
+
 
         self.label = [QLabel(self) for i in range(n)]
         self.labels = QHBoxLayout()
-        self.labels.setSpacing(0)0
+        self.labels.setSpacing(0)
         self.movie = QMovie("vibe-cat.gif")
 
         for i in range(len(self.label)):
@@ -43,35 +50,24 @@ class MainWindow(QMainWindow):
             self.label[i].setScaledContents(True)
             self.labels.addWidget(self.label[i])
 
-
-        self.block = QHBoxLayout()
-        self.block.addWidget(Color('blue'))
-        
+    
         
         self.movie.start()
         self.setLayout(self.labels)
         self.labels.setGeometry(QtCore.QRect(0, 20, self.width(), self.height()//3))
 
-        self.rect = QHBoxLayout() 
-        self.rect.addWidget(Color('gray')) 
-        self.rect.setSpacing(0)
-        self.widget = QWidget() 
-        self.widget.setLayout(self.rect)
-        self.setCentralWidget(self.widget)
 
-
-
-    #painter.drawRect(0, 0, self.width(), self.height() // 3 + 40)
 
 
     def resizeEvent(self, event):
+        self.band.setGeometry(0, 0, self.width(), self.height() // 3+40)
         self.labels.setGeometry(QtCore.QRect(0, 20, self.width(), self.height()//3))
         self.text.setGeometry(0, self.height()//2, self.width(), 73)
         py = (self.width()**2 + self.height()**2)**(1/2) //30
         py = int(py)
         self.text.setStyleSheet("color: white; font-size : " + str(py) + "px; background-color: none") 
 
-n = 20
+n = 13
 
 def main ():
     app = QApplication(sys.argv)
