@@ -17,14 +17,15 @@ def play_random_move_V2(board):
   elif len(board)==2:
     a = random.randint(1, 2)
   elif len(board)==1:
-    return "Tu as perdu"
+    a=1
   else:
-    return "Fin, tu as gagné"
+    return board
+  
   return a, board[a:]
 
 
 
-board = ["|" for i in range(13)]
+board = ["|" for i in range(2)]
 print(board)
 a, newboard = play_random_move_V2(board)
 print(a, newboard)
