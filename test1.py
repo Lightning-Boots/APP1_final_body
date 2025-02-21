@@ -1,4 +1,5 @@
 #simulation des parties
+import random
 def minimax(allumettes, est_maximisant,nb):
     # Condition d'arrêt 
     if allumettes == 0:
@@ -31,7 +32,7 @@ def trouver_meilleur_coup(allumettes, nb):
 def jouer_nim():
     allumettes = int(input("Entrez le nombre d'allumettes sur le plateau : "))
     nb_allumettes = int(input("Combien d'allumettes peut-on retirer à chaque coups : "))
-    est_tour_joueur = True  # le joueur commence
+    est_tour_joueur = random.choice([True, False])  # le joueur commence
     while allumettes > 0:
         print(f"Allumettes restantes : {allumettes}")
         if est_tour_joueur:
@@ -46,7 +47,7 @@ def jouer_nim():
     if est_tour_joueur:
         print("Le joueur gagne")
     else:
-        
+
         print("L'IA' gagne ")
 #lancement du jeu
 jouer_nim()
