@@ -6,7 +6,7 @@ from PyQt5 import QtCore
 class Fenetre(QMainWindow): 
     def __init__(self): 
         super().__init__() 
-        self.setWindowTitle("Bouto's") 
+        self.setWindowTitle("Jeux de Nim") 
 
 
         self.button1 = QPushButton("IA gagnante") 
@@ -36,7 +36,7 @@ class Fenetre(QMainWindow):
 class Choix_nombre_allumette(QMainWindow): 
     def __init__(self): 
         super().__init__() 
-        self.setWindowTitle("Bouto's") 
+        self.setWindowTitle("Nombre d'allumette") 
 
         self.text = QLabel(self)
         self.text.setText("Nombre d'allumette : ")
@@ -44,7 +44,7 @@ class Choix_nombre_allumette(QMainWindow):
 
         self.textbox = QLineEdit(self)
 
-        self.button = QPushButton('Show text', self)
+        self.button = QPushButton('Valider', self)
         self.button.clicked.connect(self.on_click)
 
 
@@ -60,23 +60,23 @@ class Choix_nombre_allumette(QMainWindow):
 
     
     def on_click(self):
-        textboxValue = self.textbox.text()
-        QMessageBox.question(self, 'Message - pythonspot.com', "You typed: " + textboxValue, QMessageBox.Ok, QMessageBox.Ok)
+        window2.close()
+        window3.show()
 
 
 
 class Choix_coup_max(QMainWindow): 
     def __init__(self): 
         super().__init__() 
-        self.setWindowTitle("Bouto's") 
+        self.setWindowTitle("Coup max") 
 
         self.text = QLabel(self)
-        self.text.setText("Nombre  : ")
+        self.text.setText("Nombre d'allumette maximum à retirer par tour : ")
         self.text.setStyleSheet("color: black; font-size : 15px; background-color: none")
 
         self.textbox = QLineEdit(self)
 
-        self.button = QPushButton('Show text', self)
+        self.button = QPushButton('Valider', self)
         self.button.clicked.connect(self.on_click)
 
 
@@ -105,6 +105,7 @@ if app is None:
  
 
 window1 = Fenetre()
-window2 = Choix_nombre_baton() 
+window2 = Choix_nombre_allumette() 
+window3 = Choix_coup_max()
 window1.show() 
 app.exec_()
