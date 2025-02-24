@@ -13,7 +13,7 @@ def play_random_move(board):
 
 def play_random_move_V2(board):
   a = random.randint(1, 3)
-  if len(board)-a>=0:
+  if len(board)-a>=3:
     return a, board[a:]
   elif len(board)==2:
     a = random.randint(1, 2)
@@ -37,6 +37,9 @@ class Board:
 
   def __init__(self):
     self.board = ["|" for i in range(13)]
+
+  def is_game_over(self):
+    return len(self.board) == 0
 
 
 
