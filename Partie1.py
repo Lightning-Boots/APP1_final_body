@@ -25,7 +25,7 @@ def play_random_move_V2(board):
 
 
 
-board = ["|" for i in range(2)]
+board = ["|" for i in range(4)]
 print(board)
 a, newboard = play_random_move_V2(board)
 print(a, newboard)
