@@ -18,6 +18,7 @@ class Fenetre(QMainWindow):
         self.grid = QGridLayout() 
         self.grid.addWidget(self.button1,0,0) 
         self.grid.addWidget(self.button2,0,1) 
+        
         self.widget = QWidget() 
         self.widget.setLayout(self.grid) 
         self.setCentralWidget(self.widget)
@@ -60,6 +61,13 @@ class Choix_nombre_allumette(QMainWindow):
 
     
     def on_click(self):
+        chiffre = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "-"]
+        textboxValue = self.textbox.text()
+        for i in textboxValue :
+            if i not in chiffre :
+                return QMessageBox.question(self, 'Message - pythonspot.com', "Entrez un nombre", QMessageBox.Ok, QMessageBox.Ok)
+            elif i == "-" :
+                return QMessageBox.question(self, 'Message - pythonspot.com', "Entrez un nombre positif", QMessageBox.Ok, QMessageBox.Ok)
         window2.close()
         window3.show()
 
