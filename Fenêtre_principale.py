@@ -25,12 +25,12 @@ class Fenetre(QMainWindow):
 
 
     def IAA(self): 
-        window1.close()
-        window2.show()
+        Fenetre_principale.close()
+        Fenetre_allumette.show()
     
     def IAG(self): 
-        window1.close()
-        window2.show()
+        Fenetre_principale.close()
+        Fenetre_allumette.show()
 
 
 
@@ -44,6 +44,7 @@ class Choix_nombre_allumette(QMainWindow):
         self.text.setStyleSheet("color: black; font-size : 15px; background-color: none")
 
         self.textbox = QLineEdit(self)
+        self.textbox.setText("0")
 
         self.button = QPushButton('Valider', self)
         self.button.clicked.connect(self.on_click)
@@ -63,13 +64,17 @@ class Choix_nombre_allumette(QMainWindow):
     def on_click(self):
         chiffre = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "-"]
         textboxValue = self.textbox.text()
+        if textboxValue == "":
+            return QMessageBox.question(self, 'Message - pythonspot.com', "Entrez un nombre", QMessageBox.Ok, QMessageBox.Ok)
+        elif textboxValue == "0":
+            return QMessageBox.question(self, 'Message - pythonspot.com', "Entrez un nombre supérieur à 0", QMessageBox.Ok, QMessageBox.Ok)
         for i in textboxValue :
             if i not in chiffre :
                 return QMessageBox.question(self, 'Message - pythonspot.com', "Entrez un nombre", QMessageBox.Ok, QMessageBox.Ok)
             elif i == "-" :
                 return QMessageBox.question(self, 'Message - pythonspot.com', "Entrez un nombre positif", QMessageBox.Ok, QMessageBox.Ok)
-        window2.close()
-        window3.show()
+        Fenetre_allumette.close()
+        Fenetre_coup.show()
 
 
 
@@ -83,6 +88,7 @@ class Choix_coup_max(QMainWindow):
         self.text.setStyleSheet("color: black; font-size : 15px; background-color: none")
 
         self.textbox = QLineEdit(self)
+        self.textbox.setText("0")
 
         self.button = QPushButton('Valider', self)
         self.button.clicked.connect(self.on_click)
@@ -101,7 +107,16 @@ class Choix_coup_max(QMainWindow):
     
     def on_click(self):
         textboxValue = self.textbox.text()
-        QMessageBox.question(self, 'Message - pythonspot.com', "You typed: " + textboxValue, QMessageBox.Ok, QMessageBox.Ok)
+        chiffre = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "-"]
+        if textboxValue == "":
+            return QMessageBox.question(self, 'Message - pythonspot.com', "Entrez un nombre", QMessageBox.Ok, QMessageBox.Ok)
+        elif textboxValue == "0":
+            return QMessageBox.question(self, 'Message - pythonspot.com', "Entrez un nombre supérieur à 0", QMessageBox.Ok, QMessageBox.Ok)
+        for i in textboxValue :
+            if i not in chiffre :
+                return QMessageBox.question(self, 'Message - pythonspot.com', "Entrez un nombre", QMessageBox.Ok, QMessageBox.Ok)
+            elif i == "-" :
+                return QMessageBox.question(self, 'Message - pythonspot.com', "Entrez un nombre positif", QMessageBox.Ok, QMessageBox.Ok)
 
 
 
@@ -112,8 +127,8 @@ if app is None:
     app = QApplication(sys.argv)
  
 
-window1 = Fenetre()
-window2 = Choix_nombre_allumette() 
-window3 = Choix_coup_max()
-window1.show() 
+Fenetre_principale = Fenetre()
+Fenetre_allumette = Choix_nombre_allumette() 
+Fenetre_coup = Choix_coup_max()
+Fenetre_principale.show() 
 app.exec_()
