@@ -1,14 +1,14 @@
 import sys
-from PyQt5.QtWidgets import QApplication, QMainWindow, QLabel, QHBoxLayout, QVBoxLayout, QWidget
+from PyQt5.QtWidgets import QApplication, QMainWindow, QLabel, QHBoxLayout,QWidget
 from PyQt5.QtGui import QPixmap, QMovie, QColor, QPainter, QBrush, QPen, QPalette 
-from PyQt5.QtCore import Qt, QCoreApplication
+from PyQt5.QtCore import QCoreApplication
 from PyQt5 import QtCore
 # On passe une liste vide en argument 
 # On crée notre fenêtre !
 
 
 
-class MainWindow(QMainWindow):
+class Jeu(QMainWindow):
 
     def __init__(self):
         super().__init__()
@@ -60,12 +60,14 @@ class MainWindow(QMainWindow):
         py = int(py)
         self.text.setStyleSheet("color: white; font-size : " + str(py) + "px; background-color: none") 
 
+n = 10
 
-def main ():
+app = QCoreApplication.instance() 
+if app is None: 
     app = QApplication(sys.argv)
-    window = MainWindow()
-    window.show()
-    sys.exit(app.exec_())
 
-if __name__ == "__main__":
-    main()
+
+fenetre = Jeu()
+fenetre.show()
+
+app.exec_()

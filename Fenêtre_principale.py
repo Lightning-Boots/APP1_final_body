@@ -1,7 +1,6 @@
 import sys 
-from PyQt5.QtWidgets import QApplication, QGridLayout, QLabel, QVBoxLayout, QHBoxLayout, QMainWindow, QMessageBox, QPushButton, QGridLayout, QWidget, QLineEdit
-from PyQt5.QtCore import Qt, QCoreApplication 
-from PyQt5 import QtCore
+from PyQt5.QtWidgets import QApplication, QGridLayout, QLabel, QMainWindow, QMessageBox, QPushButton, QGridLayout, QWidget, QLineEdit
+from PyQt5.QtCore import QCoreApplication 
 
 class Fenetre(QMainWindow): 
     def __init__(self): 
@@ -25,10 +24,14 @@ class Fenetre(QMainWindow):
 
 
     def IAA(self): 
+        global IA
+        IA = "Aleatoire"
         Fenetre_principale.close()
         Fenetre_allumette.show()
     
-    def IAG(self): 
+    def IAG(self):
+        global IA
+        IA = "Gagnante" 
         Fenetre_principale.close()
         Fenetre_allumette.show()
 
@@ -65,14 +68,16 @@ class Choix_nombre_allumette(QMainWindow):
         chiffre = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "-"]
         textboxValue = self.textbox.text()
         if textboxValue == "":
-            return QMessageBox.question(self, 'Message - pythonspot.com', "Entrez un nombre", QMessageBox.Ok, QMessageBox.Ok)
+            return QMessageBox.question(self, 'Erreur', "Entrez un nombre", QMessageBox.Ok, QMessageBox.Ok)
         elif textboxValue == "0":
-            return QMessageBox.question(self, 'Message - pythonspot.com', "Entrez un nombre supérieur à 0", QMessageBox.Ok, QMessageBox.Ok)
+            return QMessageBox.question(self, 'Erreur', "Entrez un nombre supérieur à 0", QMessageBox.Ok, QMessageBox.Ok)
         for i in textboxValue :
             if i not in chiffre :
-                return QMessageBox.question(self, 'Message - pythonspot.com', "Entrez un nombre", QMessageBox.Ok, QMessageBox.Ok)
+                return QMessageBox.question(self, 'Erreur', "Entrez un nombre", QMessageBox.Ok, QMessageBox.Ok)
             elif i == "-" :
-                return QMessageBox.question(self, 'Message - pythonspot.com', "Entrez un nombre positif", QMessageBox.Ok, QMessageBox.Ok)
+                return QMessageBox.question(self, 'Erreur', "Entrez un nombre positif", QMessageBox.Ok, QMessageBox.Ok)
+        global nombre_allumette
+        nombre_allumette = int(textboxValue)
         Fenetre_allumette.close()
         Fenetre_coup.show()
 
@@ -109,26 +114,34 @@ class Choix_coup_max(QMainWindow):
         textboxValue = self.textbox.text()
         chiffre = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "-"]
         if textboxValue == "":
-            return QMessageBox.question(self, 'Message - pythonspot.com', "Entrez un nombre", QMessageBox.Ok, QMessageBox.Ok)
+            return QMessageBox.question(self, 'Erreur', "Entrez un nombre", QMessageBox.Ok, QMessageBox.Ok)
         elif textboxValue == "0":
-            return QMessageBox.question(self, 'Message - pythonspot.com', "Entrez un nombre supérieur à 0", QMessageBox.Ok, QMessageBox.Ok)
+            return QMessageBox.question(self, 'Erreur', "Entrez un nombre supérieur à 0", QMessageBox.Ok, QMessageBox.Ok)
         for i in textboxValue :
             if i not in chiffre :
-                return QMessageBox.question(self, 'Message - pythonspot.com', "Entrez un nombre", QMessageBox.Ok, QMessageBox.Ok)
+                return QMessageBox.question(self, 'Erreur', "Entrez un nombre", QMessageBox.Ok, QMessageBox.Ok)
             elif i == "-" :
-                return QMessageBox.question(self, 'Message - pythonspot.com', "Entrez un nombre positif", QMessageBox.Ok, QMessageBox.Ok)
+                return QMessageBox.question(self, 'Erreur', "Entrez un nombre positif", QMessageBox.Ok, QMessageBox.Ok)
+        global Coup_max
+        Coup_max = textboxValue
+        Fenetre_coup.close()
+
+
+global IA, nombre_allumette, Coup_max
+
+nombre_allumette = 0
+Coup_max = 0
+IA  = 0
 
 
 
-
-    
 app = QCoreApplication.instance() 
 if app is None: 
     app = QApplication(sys.argv)
  
-
 Fenetre_principale = Fenetre()
 Fenetre_allumette = Choix_nombre_allumette() 
 Fenetre_coup = Choix_coup_max()
-Fenetre_principale.show() 
+Fenetre_principale.show()
+
 app.exec_()
