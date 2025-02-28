@@ -7,13 +7,6 @@ from PyQt5 import QtCore
 # On crée notre fenêtre !
 
 
-class Color(QWidget): 
-    def __init__(self, color): 
-        super().__init__() 
-        self.setAutoFillBackground(True) 
-        self.myPalette = self.palette() 
-        self.myPalette.setColor(QPalette.Window, QColor(color)) 
-        self.setPalette(self.myPalette)
 
 class MainWindow(QMainWindow):
 
@@ -67,7 +60,6 @@ class MainWindow(QMainWindow):
         py = int(py)
         self.text.setStyleSheet("color: white; font-size : " + str(py) + "px; background-color: none") 
 
-n = 13
 
 def main ():
     app = QApplication(sys.argv)
