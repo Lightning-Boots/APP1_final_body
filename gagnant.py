@@ -8,7 +8,7 @@ def minimax(allumettes, est_maximisant, Coup_max):
     scores = []
     for coup in range(1, min(Coup_max +1 , allumettes + 1)):
         # simulation de la partie 
-        score = minimax(allumettes - coup, not est_maximisant)
+        score = minimax(allumettes - coup, not est_maximisant, Coup_max)
         scores.append(score)
 
     return max(scores) if est_maximisant else min(scores)

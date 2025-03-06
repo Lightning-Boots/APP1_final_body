@@ -4,7 +4,8 @@ from PyQt5.QtGui import QMovie
 from PyQt5.QtCore import QCoreApplication
 from PyQt5 import QtCore
 from Jeu import nombre_allumette, Coup_max, IA
-from andrea import trouver_meilleur_coup, minimax
+from gagnant import trouver_meilleur_coup
+from aleatoire import play_random_move_V2
 # On passe une liste vide en argument 
 # On crée notre fenêtre !
 
@@ -83,7 +84,7 @@ class Jeu(QMainWindow):
 
     def onClick(self):
         global nombre_allumette
-        print(IA, nombre_allumette, Coup_max)
+
         textboxValue = self.textbox.text()
         chiffre = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "-"]
         textboxValue = self.textbox.text()
@@ -114,8 +115,10 @@ class Jeu(QMainWindow):
             
 
         nombre_allumette -= int(textboxValue)
-        coup_IA = trouver_meilleur_coup(nombre_allumette, Coup_max)
-        print(coup_IA)
+        if IA == "Gagnante":
+            coup_IA = trouver_meilleur_coup(nombre_allumette, Coup_max)
+        elif IA == "Aleatoire":
+            coup_IA = play_random_move_V2(nombre_allumette, Coup_max)
         nombre_allumette -= coup_IA
         for i in range (int(textboxValue) + coup_IA):
             derniere_image = self.labels.takeAt(self.labels.count() - 1)
