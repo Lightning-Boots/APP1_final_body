@@ -1,11 +1,12 @@
 #simulation des parties
-def minimax(allumettes, est_maximisant):
+
+def minimax(allumettes, est_maximisant, Coup_max):
     # Condition d'arrêt 
     if allumettes == 0:
         return +1 if est_maximisant else -1#-1 perdu, +1 gagné
 
     scores = []
-    for coup in range(1, min(4, allumettes + 1)):
+    for coup in range(1, min(Coup_max +1 , allumettes + 1)):
         # simulation de la partie 
         score = minimax(allumettes - coup, not est_maximisant)
         scores.append(score)
@@ -13,13 +14,13 @@ def minimax(allumettes, est_maximisant):
     return max(scores) if est_maximisant else min(scores)
 
 #choisis le meilleure coup
-def trouver_meilleur_coup(allumettes):
+def trouver_meilleur_coup(allumettes, Coup_max):
     meilleur_coup = None
     # ajout chat gpt
     meilleur_score = float('-inf')
 
-    for prise in range(1, min(4, allumettes + 1)):
-        score = minimax(allumettes - prise, False)# L'adversaire joue après ce coup
+    for prise in range(1, min(Coup_max + 1, allumettes + 1)):
+        score = minimax(allumettes - prise, False, Coup_max)# L'adversaire joue après ce coup
         if score > meilleur_score:
             # meilleur coup déterminer
             meilleur_score = score
@@ -47,5 +48,4 @@ def jouer_nim():
     else:
         print("L'IA' gagne ")
         
-#lancement du jeu
-jouer_nim()
+
