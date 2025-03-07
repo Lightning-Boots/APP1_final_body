@@ -147,7 +147,6 @@ if app is None:
 
 
 fenetre = Jeu()
-fin = Game_over()
 fenetre.show()
 
 app.exec_()
