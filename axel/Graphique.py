@@ -4,7 +4,7 @@ from PyQt5.QtGui import QMovie
 from PyQt5.QtCore import QCoreApplication
 from PyQt5 import QtCore
 from axel.Jeu import nombre_allumette, Coup_max, IA
-from gagnant import trouver_meilleur_coup
+from axel.gagnant import trouver_meilleur_coup
 from axel.aleatoire import play_random_move_V2
 # On passe une liste vide en argument 
 # On crée notre fenêtre !

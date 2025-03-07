@@ -1,4 +1,4 @@
-
+####################################
 def albet(allumettes, est_maximisant, alpha, beta):
     if allumettes == 0:
         return +1 if est_maximisant else -1  # -1 perdu, +1 gagné

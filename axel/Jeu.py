@@ -2,10 +2,10 @@ import sys
 from PyQt5.QtWidgets import QApplication
 from PyQt5.QtCore import QCoreApplication
 
-import Fenêtre_principale
-from Fenêtre_principale import nombre_allumette, Coup_max, IA
+import axel.Fenêtre_principale as Fenêtre_principale
+from axel.Fenêtre_principale import nombre_allumette, Coup_max, IA
 
-import Graphique
+import axel.Graphique as Graphique
 
 
 
