@@ -1,28 +1,40 @@
-#simulation des parties
 
-def minimax(allumettes, est_maximisant, Coup_max):
-    # Condition d'arrêt 
+def albet(allumettes, est_maximisant, alpha, beta):
     if allumettes == 0:
-        return +1 if est_maximisant else -1#-1 perdu, +1 gagné
+        return +1 if est_maximisant else -1  # -1 perdu, +1 gagné
 
-    scores = []
-    for coup in range(1, min(Coup_max +1 , allumettes + 1)):
-        # simulation de la partie 
-        score = minimax(allumettes - coup, not est_maximisant, Coup_max)
-        scores.append(score)
+    if est_maximisant:
+        meilleur_score = float('-inf')
+        for coup in range(1, min(4, allumettes + 1)):
+            score = albet(allumettes - coup, False, alpha, beta)
+            meilleur_score = max(meilleur_score, score)
+            alpha = max(alpha, score)
+            
+            
+            if beta <= alpha:
+                break  
+            
+            
+        return meilleur_score
+    else:
+        meilleur_score = float('inf')
+        for coup in range(1, min(4, allumettes + 1)):
+            score = albet(allumettes - coup, True, alpha, beta)
+            meilleur_score = min(meilleur_score, score)
+            beta = min(beta, score)
+            if beta <= alpha:
+                break  
+        return meilleur_score
 
-    return max(scores) if est_maximisant else min(scores)
-
-#choisis le meilleure coup
-def trouver_le_pire_coup(allumettes, Coup_max):
-    pire_coup = None
-    
+def trouver_le_pire_coup(allumettes, Coup_max, alpha, beta):
+    pire_coup=None
     pire_score = float('inf')
+    alpha = float('-inf')
+    beta = float('inf')
 
     for prise in range(1, max(Coup_max + 1, allumettes + 1)):
-        score = minimax(allumettes - prise, False, Coup_max)# L'adversaire joue après ce coup
-        if score < pire_score:
-            # meilleur coup déterminer
+        score = albet(allumettes - prise, False, alpha, beta)  
+        if score > pire_score:
             pire_score = score
             pire_coup = prise
     return pire_coup

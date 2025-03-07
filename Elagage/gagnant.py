@@ -1,30 +1,43 @@
-#simulation des parties
 
-def minimax(allumettes, est_maximisant, Coup_max):
-    # Condition d'arrêt 
+def albet(allumettes, est_maximisant, alpha, beta):
     if allumettes == 0:
-        return +1 if est_maximisant else -1#-1 perdu, +1 gagné
+        return +1 if est_maximisant else -1  # -1 perdu, +1 gagné
 
-    scores = []
-    for coup in range(1, min(Coup_max +1 , allumettes + 1)):
-        # simulation de la partie 
-        score = minimax(allumettes - coup, not est_maximisant, Coup_max)
-        scores.append(score)
+    if est_maximisant:
+        meilleur_score = float('-inf')
+        for coup in range(1, min(4, allumettes + 1)):
+            score = albet(allumettes - coup, False, alpha, beta)
+            meilleur_score = max(meilleur_score, score)
+            alpha = max(alpha, score)
+            
+            
+            if beta <= alpha:
+                break  
+            
+            
+        return meilleur_score
+    else:
+        meilleur_score = float('inf')
+        for coup in range(1, min(4, allumettes + 1)):
+            score = albet(allumettes - coup, True, alpha, beta)
+            meilleur_score = min(meilleur_score, score)
+            beta = min(beta, score)
+            if beta <= alpha:
+                break  
+        return meilleur_score
 
-    return max(scores) if est_maximisant else min(scores)
-
-#choisis le meilleure coup
-def trouver_meilleur_coup(allumettes, Coup_max):
+def trouver_meilleur_coup(allumettes):
     meilleur_coup = None
-    # ajout chat gpt
     meilleur_score = float('-inf')
-
-    for prise in range(1, min(Coup_max + 1, allumettes + 1)):
-        score = minimax(allumettes - prise, False, Coup_max)# L'adversaire joue après ce coup
+    alpha = float('-inf')
+    beta = float('inf')
+    
+    for prise in range(1, min(4, allumettes + 1)):
+        score = albet(allumettes - prise, False, alpha, beta)  
         if score > meilleur_score:
-            # meilleur coup déterminer
             meilleur_score = score
             meilleur_coup = prise
+    
     return meilleur_coup
 
 
