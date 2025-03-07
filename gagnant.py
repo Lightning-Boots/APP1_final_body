@@ -1,4 +1,4 @@
-#simulation des parties
+"""Code du mode de jeu gagnant de l'IA"""
 
 def minimax(allumettes, est_maximisant, Coup_max):
     # Condition d'arrêt 
@@ -13,7 +13,7 @@ def minimax(allumettes, est_maximisant, Coup_max):
 
     return max(scores) if est_maximisant else min(scores)
 
-#choisis le meilleure coup
+#choisit le meilleur coup
 def trouver_meilleur_coup(allumettes, Coup_max):
     meilleur_coup = None
     # ajout chat gpt
@@ -28,24 +28,4 @@ def trouver_meilleur_coup(allumettes, Coup_max):
     return meilleur_coup
 
 
-#création partie 
-def jouer_nim():
-    allumettes = 13  
-    est_tour_joueur = True  # le joueur commence
-    while allumettes > 0:
-        print(f"Allumettes restantes : {allumettes}")
-        if est_tour_joueur:
-            coup = int(input("Combien d'allumettes ? (1, 2 ou 3) : "))
-            while coup < 1 or coup > 3 or coup > allumettes:
-                coup = int(input("Coup invalide. Prenez entre 1 et 3 allumettes : "))
-        else:
-            coup = trouver_meilleur_coup(allumettes)
-            print(f"L'IA prend {coup} allumettes.")
-        allumettes -= coup # mise à jour des coups
-        est_tour_joueur = not est_tour_joueur  # changement de joueur
-    if est_tour_joueur:
-        print("Le joueur gagne")
-    else:
-        print("L'IA' gagne ")
-        
 

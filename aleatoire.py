@@ -1,3 +1,4 @@
+"""Code du mode de jeu Aléatoire"""
 import random
 
 def play_random_move_V2(nombre_allumette, Coup_max):

@@ -1,7 +1,10 @@
+"""Codes pour les paramètres du jeu"""
+
 import sys 
 from PyQt5.QtWidgets import QApplication, QGridLayout, QLabel, QMainWindow, QMessageBox, QPushButton, QGridLayout, QWidget, QLineEdit
 from PyQt5.QtCore import QCoreApplication 
 
+#Fenêtre du choix du mode de jeu (IA gagnante ou aléatoire)
 class Fenetre(QMainWindow): 
     def __init__(self): 
         super().__init__() 
@@ -25,20 +28,20 @@ class Fenetre(QMainWindow):
         self.setCentralWidget(self.widget)
 
 
-    def IAA(self): 
+    def IAA(self): # Rend la variable IA et indique le choix globale et passe à la fenetre suivante
         global IA
         IA = "Aleatoire"
-        Fenetre_principale.close()
+        Fenetre_mode_de_jeu.close()
         Fenetre_allumette.show()
     
-    def IAG(self):
+    def IAG(self): # Rend la variable IA globale et passe à la fenetre suivante
         global IA
         IA = "Gagnante" 
-        Fenetre_principale.close()
+        Fenetre_mode_de_jeu.close()
         Fenetre_allumette.show()
 
 
-
+#Fenetre pour le choix du nombre d'allumettes
 class Choix_nombre_allumette(QMainWindow): 
     def __init__(self): 
         super().__init__() 
@@ -70,13 +73,14 @@ class Choix_nombre_allumette(QMainWindow):
 
     
     def on_click(self):
-        chiffre = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "-"]
+        chiffre = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "-"] #défini les entrées possibles
         textboxValue = self.textbox.text()
         msg_box = QMessageBox(self)
         msg_box.setWindowTitle("Erreur")
         msg_box.setStyleSheet("QLabel { color: white; }")  
         msg_box.setIcon(QMessageBox.Warning)
         msg_box.addButton(QMessageBox.Ok)
+        # on diffirencie les cas en s'assurant que le texte entré soit bien un nombre
         if textboxValue == "":
             msg_box.setText("Entrez un nombre")
             return msg_box.exec_() 
@@ -96,7 +100,7 @@ class Choix_nombre_allumette(QMainWindow):
         Fenetre_coup.show()
 
 
-
+# La fenetre du choix du nombre maximal d'alumettes qu'on peut retirer
 class Choix_coup_max(QMainWindow): 
     def __init__(self): 
         super().__init__() 
@@ -157,7 +161,7 @@ class Choix_coup_max(QMainWindow):
 
 
 
-global IA, nombre_allumette, Coup_max
+#Créations des variables utiles au lancement du jeu
 
 nombre_allumette = 0
 Coup_max = 0
@@ -169,9 +173,9 @@ app = QCoreApplication.instance()
 if app is None: 
     app = QApplication(sys.argv)
  
-Fenetre_principale = Fenetre()
+Fenetre_mode_de_jeu = Fenetre()
 Fenetre_allumette = Choix_nombre_allumette() 
 Fenetre_coup = Choix_coup_max()
-Fenetre_principale.show()
+Fenetre_mode_de_jeu.show() #On montre la premiere fenetre du jeu qui se lancera dans le fichier "Jeu"
 
 app.exec_()
