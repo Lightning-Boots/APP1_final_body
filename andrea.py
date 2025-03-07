@@ -47,5 +47,5 @@ def jouer_nim():
     else:
         print("L'IA' gagne ")
         
-#lancement du jeu
+#lancement du jeu    
 jouer_nim()

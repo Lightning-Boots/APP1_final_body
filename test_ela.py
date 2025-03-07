@@ -1,42 +1,67 @@
 
-def alphabeta(plateau, profondeur, alpha, beta, est_maximisant):
-    if est_fin_du_jeu(plateau):
-        return évaluer_plateau(plateau)
+def albet(allumettes, est_maximisant, alpha, beta):
+    if allumettes == 0:
+        return +1 if est_maximisant else -1  # -1 perdu, +1 gagné
 
     if est_maximisant:
         meilleur_score = float('-inf')
-        for mouvement in générer_mouvements(plateau):
-            jouer_mouvement(plateau, mouvement, 'X')
-            score = alphabeta(plateau, profondeur + 1, alpha, beta, False)
-            annuler_mouvement(plateau, mouvement)
+        for coup in range(1, min(4, allumettes + 1)):
+            score = albet(allumettes - coup, False, alpha, beta)
             meilleur_score = max(meilleur_score, score)
-            alpha = max(alpha, meilleur_score)
+            alpha = max(alpha, score)
+            
+            
             if beta <= alpha:
-                break
+                break  
+            
+            
         return meilleur_score
     else:
         meilleur_score = float('inf')
-        for mouvement in générer_mouvements(plateau):
-            jouer_mouvement(plateau, mouvement, 'O')
-            score = alphabeta(plateau, profondeur + 1, alpha, beta, True)
-            annuler_mouvement(plateau, mouvement)
+        for coup in range(1, min(4, allumettes + 1)):
+            score = albet(allumettes - coup, True, alpha, beta)
             meilleur_score = min(meilleur_score, score)
-            beta = min(beta, meilleur_score)
+            beta = min(beta, score)
             if beta <= alpha:
-                break
+                break  
         return meilleur_score
 
+def trouver_meilleur_coup(allumettes):
+    meilleur_coup = None
+    meilleur_score = float('-inf')
+    alpha = float('-inf')
+    beta = float('inf')
+    
+    for prise in range(1, min(4, allumettes + 1)):
+        score = albet(allumettes - prise, False, alpha, beta)  
+        if score > meilleur_score:
+            meilleur_score = score
+            meilleur_coup = prise
+    
+    return meilleur_coup
 
-def jouer_contre_ordinateur():
-    plateau = initialiser_plateau()
-    joueur = 'X'
-
-    while not est_fin_du_jeu(plateau):
-        if joueur == 'X':
-            mouvement = utilisateur_choisir_mouvement(plateau)
+def jouer_nim():
+    allumettes = 13  
+    est_tour_joueur = True  # Le joueur commence
+    
+    while allumettes > 0:
+        print(f"Allumettes restantes : {allumettes}")
+        
+        if est_tour_joueur:
+            coup = int(input("Combien d'allumettes ? (1, 2 ou 3) : "))
+            while coup < 1 or coup > 3 or coup > allumettes:
+                coup = int(input("Coup invalide. Prenez entre 1 et 3 allumettes : "))
         else:
-            _, mouvement = minimax(plateau, 0, joueur == 'X')
-        jouer_mouvement(plateau, mouvement, joueur)
-        joueur = 'O' if joueur == 'X' else 'X'
+            coup = trouver_meilleur_coup(allumettes)
+            print(f"L'IA prend {coup} allumettes.")
+        
+        allumettes -= coup  # Mise à jour des coups
+        est_tour_joueur = not est_tour_joueur  # Changement de joueur
+    
+    if est_tour_joueur:
+        print("Le joueur gagne")
+    else:
+        print("L'IA gagne")
 
-    afficher_resultat(plateau)
+# Lancement du jeu    
+jouer_nim()
