@@ -14,6 +14,9 @@ class Fenetre(QMainWindow):
         self.button2.clicked.connect(self.IAA)  
         self.button1.setStyleSheet("color: white; background-color: black")
         self.button2.setStyleSheet("color: white; background-color: black")
+        self.button3 = QPushButton("IA aléatoire") 
+        self.button3.clicked.connect(self.IAG)  
+        self.button3.setStyleSheet("color: white; background-color: black")
 
 
         self.grid = QGridLayout() 
@@ -34,6 +37,12 @@ class Fenetre(QMainWindow):
     def IAG(self):
         global IA
         IA = "Gagnante" 
+        Fenetre_principale.close()
+        Fenetre_allumette.show()
+      
+    def IAP(self):
+        global IA
+        IA = "Perdant" 
         Fenetre_principale.close()
         Fenetre_allumette.show()
 

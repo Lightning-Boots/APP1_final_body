@@ -122,6 +122,8 @@ class Jeu(QMainWindow):
             coup_IA = trouver_meilleur_coup(nombre_allumette, Coup_max)
         elif IA == "Aleatoire":
             coup_IA = play_random_move_V2(nombre_allumette, Coup_max)
+        elif IA == "Perdant":
+            coup_IA=trouver_le_pire_coup(nombre_allumette,Coup_max)
         nombre_allumette -= coup_IA
         if nombre_allumette == 0 :
             return fenetre.close()
