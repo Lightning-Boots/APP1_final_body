@@ -9,8 +9,8 @@ class Fenetre(QMainWindow):
         self.setStyleSheet("background-color: black") 
 
         self.button1 = QPushButton("IA gagnante") 
-        self.button1.clicked.connect(self.IAG)
         self.button2 = QPushButton("IA aléatoire") 
+        self.button1.clicked.connect(self.IAG)
         self.button2.clicked.connect(self.IAA)  
         self.button1.setStyleSheet("color: white; background-color: black")
         self.button2.setStyleSheet("color: white; background-color: black")

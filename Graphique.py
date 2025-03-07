@@ -56,7 +56,7 @@ class Jeu(QMainWindow):
         self.label = [QLabel(self) for i in range(nombre_allumette)]
         self.labels = QHBoxLayout()
         self.labels.setSpacing(0)
-        self.movie = QMovie("vibe-cat.gif")
+        self.movie = QMovie("APP1_final_body/vibe-cat.gif")
 
         for i in range(len(self.label)):
             self.label[i].setMovie(self.movie)
