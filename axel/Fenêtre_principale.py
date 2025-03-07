@@ -153,6 +153,10 @@ class Choix_coup_max(QMainWindow):
         Fenetre_coup.close()
 
 
+
+
+
+
 global IA, nombre_allumette, Coup_max
 
 nombre_allumette = 0
