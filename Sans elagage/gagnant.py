@@ -1,4 +1,4 @@
-#simulation des parties
+"""Code du mode de jeu gagnant de l'IA"""
 
 def minimax(allumettes, est_maximisant, Coup_max):
     # Condition d'arrêt 
@@ -13,7 +13,7 @@ def minimax(allumettes, est_maximisant, Coup_max):
 
     return max(scores) if est_maximisant else min(scores)
 
-#choisis le meilleure coup
+#choisit le meilleur coup
 def trouver_meilleur_coup(allumettes, Coup_max):
     meilleur_coup = None
     # ajout chat gpt
