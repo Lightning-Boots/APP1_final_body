@@ -6,8 +6,7 @@ from PyQt5 import QtCore
 from Jeu import nombre_allumette, Coup_max, IA
 from gagnant import trouver_meilleur_coup
 from aleatoire import play_random_move_V2
-# On passe une liste vide en argument 
-# On crée notre fenêtre !
+
 
 
 
@@ -36,7 +35,6 @@ class Jeu(QMainWindow):
         self.textbox.setGeometry(0, self.height()//2+60, self.width(), 40)
         self.textbox.setStyleSheet("color: white; font-size : 25px; background-color: black")
         self.textbox.setAlignment(QtCore.Qt.AlignCenter)
-
 
         self.central_widget = QWidget(self)
         self.vbox = QVBoxLayout()
@@ -69,6 +67,7 @@ class Jeu(QMainWindow):
         self.movie.start()
         self.setLayout(self.labels)
         self.labels.setGeometry(QtCore.QRect(0, 20, self.width(), self.height()//3))
+        
 
     def resizeEvent(self, event):
         self.band.setGeometry(0, 0, self.width(), self.height() // 3+40)
@@ -81,6 +80,7 @@ class Jeu(QMainWindow):
         py = int(py)
         self.button.setStyleSheet("color: white; font-size : " + str(py) + "px; background-color: black")
         self.text.setStyleSheet("color: white; font-size : " + str(py) + "px; background-color: none") 
+        self.text.setStyleSheet("color: white; font-size : "  + str(py) + "px; background-color: none")
 
     def onClick(self):
         global nombre_allumette
@@ -110,16 +110,20 @@ class Jeu(QMainWindow):
                 msg_box.setText("Entrez un nombre non supérieur au nombre d'allumette")
                 return msg_box.exec_() 
             elif int(textboxValue) > Coup_max:
-                msg_box.setText("Entrez un nombre inférieur à : " + str(Coup_max))
+                msg_box.setText("Entrez un nombre inférieur ou égale à : " + str(Coup_max))
                 return msg_box.exec_() 
             
 
         nombre_allumette -= int(textboxValue)
-        if IA == "Gagnante":
+        if nombre_allumette == 0 :
+            return fenetre.close()
+        elif IA == "Gagnante":
             coup_IA = trouver_meilleur_coup(nombre_allumette, Coup_max)
         elif IA == "Aleatoire":
             coup_IA = play_random_move_V2(nombre_allumette, Coup_max)
         nombre_allumette -= coup_IA
+        if nombre_allumette == 0 :
+            return fenetre.close()
         for i in range (int(textboxValue) + coup_IA):
             derniere_image = self.labels.takeAt(self.labels.count() - 1)
             derniere_image.widget().deleteLater()
@@ -130,7 +134,12 @@ class Jeu(QMainWindow):
 
         return nombre_allumette
 
- 
+
+
+
+
+
+
 
 app = QCoreApplication.instance() 
 if app is None: 
@@ -138,6 +147,7 @@ if app is None:
 
 
 fenetre = Jeu()
+fin = Game_over()
 fenetre.show()
 
 app.exec_()
