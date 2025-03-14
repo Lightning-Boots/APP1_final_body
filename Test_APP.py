@@ -116,7 +116,7 @@ class Fenetre(QMainWindow):
         self.textEdit.setStyleSheet("font-size: 20px")
         self.textEdit.setText("")
         self.valider = QPushButton('Valider')
-        self.valider.clicked.connect(self.keyPressEvent)
+        self.valider.clicked.connect(self.valider)
 
         self.box1.addWidget(self.francais)
         self.box1.addWidget(self.textEdit)
@@ -147,7 +147,7 @@ class Fenetre(QMainWindow):
         self.widget.setLayout(self.box)
         self.setCentralWidget(self.widget)
 
-    def keyPressEvent(self):
+    def valider(self):
         mot_francais = self.textEdit.toPlainText()
         print(mot_francais)
         self.textEdit1.setText(mot_francais)
@@ -167,14 +167,18 @@ class Fenetre(QMainWindow):
             list_chemin = self.chemin[0].split("/")
             # Ouvrir le fichier CSV et lire la première ligne
             try:
-                with open(list_chemin[-1], mode='r', newline='', encoding='utf-8') as file:
-                    reader = csv.reader(file,delimiter=';')
-                    fichier = []
-                    for row in reader:
-                        fichier.append(tuple(row))
-                    print(fichier)
-                    self.fenetre=Fenetre_fichier()
-                    self.fenetre.show()
+                if not os.path.join("APP1_FINAL_BODY/", list_chemin):
+                    print('a')
+                    with open(list_chemin[-1], mode='r', newline='', encoding='utf-8') as file:
+                        reader = csv.reader(file,delimiter=';')
+                        fichier = []
+                        for row in reader:
+                            fichier.append(tuple(row))
+                        print(fichier)
+                        self.fenetre=Fenetre_fichier()
+                        self.fenetre.show()
+                else:
+                    print("existe déjà")
                 
             except Exception as e:
                 self.fenetre=Fenetre_fichier()
