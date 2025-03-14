@@ -51,12 +51,9 @@ class Board:
     return len(self.board) == 0
   
   
-<<<<<<< HEAD:APP1/Elagage/Partie1.py
   ##def play_random_move(self):
     if is_game_over(self)==False:
         a = random.randint(1, 3)
         return a, self.board[a:]
     else:
       return "Game Over"
-=======
->>>>>>> 16:Partie1.py
