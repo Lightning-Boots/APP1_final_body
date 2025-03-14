@@ -7,6 +7,9 @@ Nous allons tous travailler sur GitHub, car c’est plus pratique. Cela ne chang
 
 Le principe des branches est le suivant : dès que vous avez travaillé sur votre code, **N’OUBLIEZ JAMAIS DE FAIRE UN COMMIT avec un commentaire ET ENSUITE DE PUSHER**. Ensuite, nous pourrons "merger" ce que vous avez sur vos branches.  
 
+
+![alt text](image.png)
+
 Par exemple, si j’ai besoin de récupérer ce qu’Angelina a fait sur sa branche, elle devra d’abord faire un commit, puis pusher sur sa branche. De mon côté, en restant sur ma branche, je vais merger sa branche avec la mienne (merger est un peu comme un "pull", mais entre les branches, car "pull" se fait entre votre VS Code et GitHub, tandis que "merge" se fait entre deux branches). De cette façon, j’aurai tout ce qu’elle a fait.  
 
 Attention : parfois, je pourrais avoir écrit des choses supplémentaires sur un fichier qu’elle n’a pas modifiées. Dans ce cas, après le merge, il faudra accepter les deux modifications (vous comprendrez en voyant l’interface).  
