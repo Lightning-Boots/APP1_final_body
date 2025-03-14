@@ -11,7 +11,6 @@ def ouverture_fichier(nom_fichier):
     return fichier
 
 print(ouverture_fichier('trad.csv'))
-
 # Création de l'arbre binaire 
 
 class ArbreBinaire:
