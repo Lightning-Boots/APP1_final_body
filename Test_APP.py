@@ -1,6 +1,12 @@
 # représenter un élément individuel de l'arbre,c'est à dire un tuple (mot_fr , mot_ang)
 import csv
 import random
+import sys
+from PyQt5.QtWidgets import QApplication, QMainWindow, QTextEdit, QLabel, QPushButton, QVBoxLayout, QWidget, QFileDialog,QHBoxLayout
+from PyQt5.QtCore import QCoreApplication, Qt
+import csv
+import shutil
+import os
 
 class Noeud:
     def __init__(self, tuples_mots):
@@ -72,7 +78,7 @@ def ouverture_fichier(nom_fichier):
 
 def creation_arbre():
     arbre=ArbreBinaire()
-    liste_mot= ouverture_fichier("test_APP2.csv")
+    liste_mot= ouverture_fichier("APP1_final_body/test_APP2.csv")
     while len(liste_mot) > 0: 
         if len(liste_mot) > 1:
             nb_aleatoire = random.randint(0, len(liste_mot) - 1)  # Plage corrigée
@@ -86,12 +92,7 @@ def creation_arbre():
 creation_arbre() 
 
 #Importations
-import sys
-from PyQt5.QtWidgets import QApplication, QMainWindow, QTextEdit, QLabel, QPushButton, QVBoxLayout, QWidget, QFileDialog,QHBoxLayout
-from PyQt5.QtCore import QCoreApplication, Qt
-import csv
-import shutil
-import os
+
 
 # Définir la fenêtre principale
 class Fenetre(QMainWindow):
@@ -132,6 +133,7 @@ class Fenetre(QMainWindow):
         self.textEdit1.setText("")
 
         self.reverse = QPushButton('Inverse')
+        self.reverse.clicked.connect(self.inverser)
         self.box2.addWidget(self.reverse)
 
         self.ajout = QPushButton('Ajouter un mot dans le dictionnaire')
@@ -147,7 +149,13 @@ class Fenetre(QMainWindow):
         self.widget.setLayout(self.box)
         self.setCentralWidget(self.widget)
 
-    def valider(self):
+    def inverser(self):
+        textval1 =  self.francais.text()
+        textval2 =  self.anglais.text()
+        self.francais.setText(textval2)
+        self.anglais.setText(textval1)
+
+    def keyPressEvent(self):
         mot_francais = self.textEdit.toPlainText()
         print(mot_francais)
         self.textEdit1.setText(mot_francais)
