@@ -1,5 +1,0 @@
-sourire: smile
-         parler: speak
-      maison: house
-         chien: dog
-   chat: cat
