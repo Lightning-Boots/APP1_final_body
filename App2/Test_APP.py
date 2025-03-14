@@ -63,7 +63,7 @@ class ArbreBinaire:
 
 #Création de l'arbre à partie de notre dossier CSV
 def ouverture_fichier(nom_fichier):
-    with open(nom_fichier,newline='') as csvfile:
+    with open(f'App2/{nom_fichier}',newline='') as csvfile:
         reader = csv.reader(csvfile,delimiter=';')
         fichier = []
         for row in reader:
