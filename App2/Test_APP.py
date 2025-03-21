@@ -1,6 +1,14 @@
 # représenter un élément individuel de l'arbre,c'est à dire un tuple (mot_fr , mot_ang)
 import csv
 import random
+import sys
+import chardet
+from PyQt5.QtWidgets import QApplication, QMainWindow, QTextEdit, QLabel, QPushButton, QVBoxLayout, QWidget, QFileDialog,QHBoxLayout
+from PyQt5.QtCore import QCoreApplication, Qt, QSize
+from PyQt5.QtGui import QIcon
+import csv
+import shutil
+import os
 
 class Noeud:
     def __init__(self, tuples_mots):
@@ -11,38 +19,47 @@ class Noeud:
 class ArbreBinaire:
     def __init__(self):
         self.racine = None
+        self.langue = None
 
-    def insertion(self, tuples_mots ):
+    def insertion(self, tuples_mots,langue):
+        if langue == 'anglais':
+            self.langue = 1
+        if langue == 'français':
+            self.langue = 0
         if self.racine is None:
             self.racine = Noeud(tuples_mots)
         else:
-            self.insertion_rec(self.racine,tuples_mots)
+            self.insertion_rec(self.racine,tuples_mots, self.langue)
 
-    def insertion_rec(self, noeud,  tuples_mots):
-        if  tuples_mots[0] < noeud.mot[0]:
+    def insertion_rec(self, noeud,  tuples_mots, langue):
+        if  tuples_mots[langue] < noeud.mot[langue]:
             if noeud.enfant_gauche is None:
                 noeud.enfant_gauche = Noeud(tuples_mots)
             else:
-                self.insertion_rec(noeud.enfant_gauche, tuples_mots)
+                self.insertion_rec(noeud.enfant_gauche, tuples_mots,langue)
         else:
             if noeud.enfant_droite is None:
                 noeud.enfant_droite = Noeud(tuples_mots)
             else:
-                self.insertion_rec(noeud.enfant_droite,tuples_mots)
+                self.insertion_rec(noeud.enfant_droite,tuples_mots,langue)
 
-    def recherche_mot(self, mot_fr):
-        return self.recherche_mot_rec(self.racine, mot_fr)
+    def recherche_mot(self, mot, langue):
+        if langue == 'anglais':
+            self.langue = 1
+        if langue == 'français':
+            self.langue = 0
+        return self.recherche_mot_rec(self.racine, mot,self.langue)
 
-    def recherche_mot_rec(self, noeud, mot_fr):
+    def recherche_mot_rec(self, noeud, mot,langue):
         if noeud is None:
             return None
-        if noeud.mot[0] == mot_fr:
-            return noeud.mot[1]
-        elif mot_fr < noeud.mot[0]:
-            return self.recherche_mot_rec(noeud.enfant_gauche, mot_fr)
+        if noeud.mot[langue] == mot:
+            return noeud.mot[1-langue]
+        elif mot < noeud.mot[langue]:
+            return self.recherche_mot_rec(noeud.enfant_gauche, mot,langue)
         else:
-            return self.recherche_mot_rec(noeud.enfant_droite, mot_fr)
-        
+            return self.recherche_mot_rec(noeud.enfant_droite, mot, langue)
+
 
     # Fonction récursive pour afficher les noeuds avec un espacement (niveau de profondeur)
     def enregistrer_arbre(self):
@@ -60,17 +77,34 @@ class ArbreBinaire:
             fichier.write("   " * niveau + f"{noeud.mot[0]}: {noeud.mot[1]}\n")
             if noeud.enfant_gauche is not None:
                 self.enregistrer_rec(noeud.enfant_gauche, niveau + 1, fichier)
-
 #Création de l'arbre à partie de notre dossier CSV
+def detecter_encodage(nom_fichier):
+    """ Détecte automatiquement l'encodage du fichier """
+    with open(f"App2\{nom_fichier}", 'rb') as f:
+        resultat = chardet.detect(f.read())
+    return resultat['encoding']
+
 def ouverture_fichier(nom_fichier):
+<<<<<<< HEAD
     with open(f'App2/{nom_fichier}',newline='') as csvfile:
         reader = csv.reader(csvfile,delimiter=';')
+=======
+    """ Ouvre un fichier CSV peu importe son encodage """
+    encodage = detecter_encodage(nom_fichier)
+    print(f"Encodage détecté : {encodage}")
+
+    with open(f"App2\{nom_fichier}", newline='', encoding=encodage, errors="replace") as csvfile:
+        reader = csv.reader(csvfile, delimiter=';')
+>>>>>>> 16
         fichier = []
         for row in reader:
-            fichier.append(tuple(row))
+            if len(row) == 2:
+                fichier.append(tuple(row))
+            else:
+                print(f"Ligne ignorée (mal formatée) : {row}")
     return fichier
 
-def creation_arbre():
+def creation_arbre_aleatoire(langue):
     arbre=ArbreBinaire()
     liste_mot= ouverture_fichier("test_APP2.csv")
     while len(liste_mot) > 0: 
@@ -79,19 +113,38 @@ def creation_arbre():
         else:
             nb_aleatoire = 0 
         mot=liste_mot[nb_aleatoire]
-        arbre.insertion(mot)
+        arbre.insertion(mot,langue)
         liste_mot.pop(nb_aleatoire)
     arbre.enregistrer_arbre()
-       
-creation_arbre() 
 
-#Importations
-import sys
-from PyQt5.QtWidgets import QApplication, QMainWindow, QTextEdit, QLabel, QPushButton, QVBoxLayout, QWidget, QFileDialog,QHBoxLayout
-from PyQt5.QtCore import QCoreApplication, Qt
-import csv
-import shutil
-import os
+def construire_arbre_recursif(liste, arbre, langue):
+    if not liste:
+        return
+
+    milieu = len(liste) // 2
+    arbre.insertion(liste[milieu],langue)
+    #print(liste[milieu])
+
+    # On répète pour les sous-listes gauche et droite
+    construire_arbre_recursif(liste[:milieu], arbre,langue)
+    construire_arbre_recursif(liste[milieu+1:], arbre,langue)
+
+def creation_arbre_complet(nom_fichier,langue):
+    arbre = ArbreBinaire()
+    liste_mot = ouverture_fichier(nom_fichier)
+
+    # Trie la liste si nécessaire pour avoir un arbre équilibré
+    liste_mot.sort()
+
+    construire_arbre_recursif(liste_mot, arbre,langue)
+
+    #arbre.enregistrer_arbre()
+    return arbre
+
+
+arbre_fr_to_en = creation_arbre_complet('Trad-final.csv','français')
+arbre_en_to_fr = creation_arbre_complet('Trad-final.csv','anglais')
+
 
 # Définir la fenêtre principale
 class Fenetre(QMainWindow):
@@ -100,13 +153,16 @@ class Fenetre(QMainWindow):
         # Titre de la fenêtre
         self.setWindowTitle("Traducteur")
 
-        self.box = QHBoxLayout()
+        self.box = QVBoxLayout()
 
-        self.box1 = QVBoxLayout()
+        self.box1 = QHBoxLayout()
         self.box.addLayout(self.box1)
 
-        self.box2 = QVBoxLayout()
+        self.box2 = QHBoxLayout()
         self.box.addLayout(self.box2)
+
+        self.box3 = QHBoxLayout()
+        self.box.addLayout(self.box3)
 
         # Contenu de la fenêtre principale
         self.francais = QLabel("Français")
@@ -119,27 +175,36 @@ class Fenetre(QMainWindow):
         self.valider.clicked.connect(self.keyPressEvent)
 
         self.box1.addWidget(self.francais)
-        self.box1.addWidget(self.textEdit)
-        self.box1.addWidget(self.valider)
+        self.box2.addWidget(self.textEdit)
+        self.box3.addWidget(self.valider)
+
+        self.reverse = QPushButton()
+        self.reverse.clicked.connect(self.inverser)
+        self.reverse.setFixedSize(30, 30)
+        self.reverse.setIcon(QIcon("App2/fleche.png"))
+        self.reverse.setIconSize(QSize(30,30))
+        self.box1.addWidget(self.reverse)
+        
+        self.sup = QPushButton ('Supprimer')
+        self.box3.addWidget(self.sup)
+
 
         self.anglais = QLabel("Anglais")
         self.anglais.setAlignment(Qt.AlignCenter)
         self.anglais.setStyleSheet("background-color: #B3D9F1;font-size: 20px")
         self.textEdit1 = QTextEdit()
         self.textEdit1.setStyleSheet("font-size: 20px")
-        self.box2.addWidget(self.anglais)
+        self.box1.addWidget(self.anglais)
         self.box2.addWidget(self.textEdit1)
         self.textEdit1.setText("")
 
-        self.reverse = QPushButton('Inverse')
-        self.box2.addWidget(self.reverse)
-
+        
         self.ajout = QPushButton('Ajouter un mot dans le dictionnaire')
-        self.box1.addWidget(self.ajout)
+        self.box3.addWidget(self.ajout)
         self.ajout.clicked.connect(self.ajout_mot)
 
         self.ajout1 = QPushButton('Ajouter un fichier dans le dictionnaire')
-        self.box2.addWidget(self.ajout1)
+        self.box3.addWidget(self.ajout1)
         self.ajout1.clicked.connect(self.ajout_fichier)
 
 
@@ -147,13 +212,27 @@ class Fenetre(QMainWindow):
         self.widget.setLayout(self.box)
         self.setCentralWidget(self.widget)
 
+    def inverser(self):
+        textval1 =  self.francais.text()
+        textval2 =  self.anglais.text()
+        self.francais.setText(textval2)
+        self.anglais.setText(textval1)
+
     def keyPressEvent(self):
-        mot_francais = self.textEdit.toPlainText()
-        print(mot_francais)
-        self.textEdit1.setText(mot_francais)
+        langue = self.francais.text().lower()
+        arbre = None
+        if langue =='français':
+            arbre = arbre_fr_to_en
+        if langue == 'anglais':
+            arbre = arbre_en_to_fr
+        mot= self.textEdit.toPlainText()
+        trad = arbre.recherche_mot(mot,langue)
+        print(mot,trad)
+        self.textEdit1.setText(trad)
 
     def ajout_mot(self):
-        self.fenetre2 = Fenetre2()
+        texte_francais = self.francais.text()
+        self.fenetre2 = Fenetre2(texte_francais)
         self.fenetre2.show()
 
     def ajout_fichier(self):
@@ -175,31 +254,32 @@ class Fenetre(QMainWindow):
                     print(fichier)
                     self.fenetre=Fenetre_fichier()
                     self.fenetre.show()
-                
+
             except Exception as e:
                 self.fenetre=Fenetre_fichier()
                 self.fenetre.show()
-    
+
 # Fenêtre pour ajouter un mot
 class Fenetre2(QWidget):
-    def __init__(self):
+    def __init__(self,langue):
         super().__init__()
         self.setWindowTitle("Ajout")
-        
-        self.boite = QHBoxLayout()
-    
-        self.boite1 = QVBoxLayout()
+        self.langue=langue
+
+        self.boite = QVBoxLayout()
+
+        self.boite1 = QHBoxLayout()
         self.boite.addLayout(self.boite1)
+
+        self.boite2 = QHBoxLayout()
+        self.boite.addLayout(self.boite2)
 
         self.mot_francais = QLabel("Mot en français")
         self.mot_francais.setAlignment(Qt.AlignCenter)
         self.mot_anglais = QLabel("Mot en anglais")
         self.mot_anglais.setAlignment(Qt.AlignCenter)
         self.boite1.addWidget(self.mot_francais)
-        self.boite1.addWidget(self.mot_anglais)
-
-        self.boite2 = QVBoxLayout()
-        self.boite.addLayout(self.boite2)
+        self.boite2.addWidget(self.mot_anglais)
 
         self.textEdit = QTextEdit()
         self.textEdit.setStyleSheet("font-size: 20px")
@@ -210,7 +290,7 @@ class Fenetre2(QWidget):
         self.textEdit1.setFixedSize(300, 30)
         self.textEdit1.setText("")
 
-        self.boite2.addWidget(self.textEdit)
+        self.boite1.addWidget(self.textEdit)
         self.boite2.addWidget(self.textEdit1)
 
         self.valider = QPushButton('Valider')
@@ -220,9 +300,18 @@ class Fenetre2(QWidget):
         self.setLayout(self.boite)
 
     def ajout(self):
-        mot_francais = self.textEdit.toPlainText()
-        mot_anglais = self.textEdit1.toPlainText()
-        print((mot_francais,mot_anglais))
+        mot= self.textEdit.toPlainText()
+        recherche =arbre_fr_to_en.recherche_mot(mot,self.langue.lower())
+        if recherche == None:
+            mot_francais = self.textEdit.toPlainText()
+            mot_anglais = self.textEdit1.toPlainText()
+            arbre_fr_to_en.insertion((mot_francais,mot_anglais),"français")
+            arbre_en_to_fr.insertion((mot_francais,mot_anglais),"anglais")
+            self.close()
+        else:
+            self.label=QLabel("Ce mot est déjà dans le dictionnaire")
+            self.boite.addWidget(self.label)
+        
 
 #Fenetre de validation de téléchargement
 class Fenetre_fichier(QWidget):
@@ -230,7 +319,7 @@ class Fenetre_fichier(QWidget):
         super().__init__()
         self.setWindowTitle("Validation du téléchargement")
         self.resize(300,100)
-    
+
         self.label=QLabel(" Votre fichier a bien été ajouté au dictionnaire ",self)
         self.label.setAlignment(Qt.AlignCenter)
         self.label.move(20,40)
@@ -241,7 +330,7 @@ class Fenetre_erreur(QWidget):
         super().__init__()
         self.setWindowTitle("Message d'erreur")
         self.resize(300,100)
-    
+
         self.label=QLabel("Erreur lors de l'ouverture du fichier",self)
         self.label.setAlignment(Qt.AlignCenter)
         self.label.move(20,40)

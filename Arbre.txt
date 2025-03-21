@@ -1,5 +1,10 @@
+<<<<<<< HEAD
       sourire: smile
    parler: speak
+=======
+   sourire: smile
+      parler: speak
+>>>>>>> 16
 maison: house
       chien: dog
    chat: cat
