@@ -3,7 +3,8 @@ import csv
 import random
 import sys
 from PyQt5.QtWidgets import QApplication, QMainWindow, QTextEdit, QLabel, QPushButton, QVBoxLayout, QWidget, QFileDialog,QHBoxLayout
-from PyQt5.QtCore import QCoreApplication, Qt
+from PyQt5.QtCore import QCoreApplication, Qt, QSize
+from PyQt5.QtGui import QIcon
 import csv
 import shutil
 import os
@@ -78,7 +79,7 @@ def ouverture_fichier(nom_fichier):
 
 def creation_arbre():
     arbre=ArbreBinaire()
-    liste_mot= ouverture_fichier("APP1_final_body/test_APP2.csv")
+    liste_mot= ouverture_fichier("APP1_final_body\App2/test_APP2.csv")
     while len(liste_mot) > 0: 
         if len(liste_mot) > 1:
             nb_aleatoire = random.randint(0, len(liste_mot) - 1)  # Plage corrigée
@@ -107,7 +108,6 @@ class Fenetre(QMainWindow):
         self.box.addLayout(self.box1)
 
         self.box2 = QVBoxLayout()
-        self.box.addLayout(self.box2)
 
         # Contenu de la fenêtre principale
         self.francais = QLabel("Français")
@@ -132,9 +132,13 @@ class Fenetre(QMainWindow):
         self.box2.addWidget(self.textEdit1)
         self.textEdit1.setText("")
 
-        self.reverse = QPushButton('Inverse')
+        self.reverse = QPushButton()
         self.reverse.clicked.connect(self.inverser)
-        self.box2.addWidget(self.reverse)
+        self.reverse.setFixedSize(50, 50)
+        self.reverse.setIconSize(QSize(50,50))
+        self.reverse.setIcon(QIcon("APP1_final_body\App2/fleche.png"))
+        self.sup = QPushButton ('Supprimer')
+        self.box2.addWidget(self.sup)
 
         self.ajout = QPushButton('Ajouter un mot dans le dictionnaire')
         self.box1.addWidget(self.ajout)
@@ -149,6 +153,9 @@ class Fenetre(QMainWindow):
         self.widget.setLayout(self.box)
         self.setCentralWidget(self.widget)
 
+        self.box.addWidget(self.reverse)
+        self.box.addLayout(self.box2)
+
     def inverser(self):
         textval1 =  self.francais.text()
         textval2 =  self.anglais.text()
@@ -156,9 +163,13 @@ class Fenetre(QMainWindow):
         self.anglais.setText(textval1)
 
     def keyPressEvent(self):
-        mot_francais = self.textEdit.toPlainText()
-        print(mot_francais)
-        self.textEdit1.setText(mot_francais)
+        if self.francais.text() == "Français":
+            mot_francais = self.textEdit.toPlainText()
+            self.textEdit1.setText(mot_francais)
+        if self.francais.text() == "Anglais":
+            mot_francais = self.textEdit.toPlainText()
+            self.textEdit1.setText(mot_francais)
+            print("Bah noooonnn")
 
     def ajout_mot(self):
         self.fenetre2 = Fenetre2()
