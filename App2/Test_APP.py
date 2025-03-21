@@ -24,7 +24,7 @@ class ArbreBinaire:
     def insertion(self, tuples_mots,langue):
         if langue == 'anglais':
             self.langue = 1
-        if langue == 'francais':
+        if langue == 'français':
             self.langue = 0
         if self.racine is None:
             self.racine = Noeud(tuples_mots)
@@ -36,29 +36,29 @@ class ArbreBinaire:
             if noeud.enfant_gauche is None:
                 noeud.enfant_gauche = Noeud(tuples_mots)
             else:
-                self.insertion_rec(noeud.enfant_gauche, tuples_mots)
+                self.insertion_rec(noeud.enfant_gauche, tuples_mots,langue)
         else:
             if noeud.enfant_droite is None:
                 noeud.enfant_droite = Noeud(tuples_mots)
             else:
-                self.insertion_rec(noeud.enfant_droite,tuples_mots)
+                self.insertion_rec(noeud.enfant_droite,tuples_mots,langue)
 
     def recherche_mot(self, mot, langue):
         if langue == 'anglais':
             self.langue = 1
-        if langue == 'francais':
+        if langue == 'français':
             self.langue = 0
-        return self.recherche_mot_rec(self.racine, mot)
+        return self.recherche_mot_rec(self.racine, mot,self.langue)
 
     def recherche_mot_rec(self, noeud, mot,langue):
         if noeud is None:
             return None
         if noeud.mot[langue] == mot:
-            return noeud.mot[langue-1]
+            return noeud.mot[1-langue]
         elif mot < noeud.mot[langue]:
-            return self.recherche_mot_rec(noeud.enfant_gauche, mot)
+            return self.recherche_mot_rec(noeud.enfant_gauche, mot,langue)
         else:
-            return self.recherche_mot_rec(noeud.enfant_droite, mot)
+            return self.recherche_mot_rec(noeud.enfant_droite, mot, langue)
 
 
     # Fonction récursive pour afficher les noeuds avec un espacement (niveau de profondeur)
@@ -121,8 +121,8 @@ def construire_arbre_recursif(liste, arbre, langue):
     #print(liste[milieu])
 
     # On répète pour les sous-listes gauche et droite
-    construire_arbre_recursif(liste[:milieu], arbre)
-    construire_arbre_recursif(liste[milieu+1:], arbre)
+    construire_arbre_recursif(liste[:milieu], arbre,langue)
+    construire_arbre_recursif(liste[milieu+1:], arbre,langue)
 
 def creation_arbre_complet(nom_fichier,langue):
     arbre = ArbreBinaire()
@@ -137,7 +137,7 @@ def creation_arbre_complet(nom_fichier,langue):
     return arbre
 
 
-arbre_fr_to_en = creation_arbre_complet('Trad-final.csv','francais')
+arbre_fr_to_en = creation_arbre_complet('Trad-final.csv','français')
 arbre_en_to_fr = creation_arbre_complet('Trad-final.csv','anglais')
 
 
@@ -214,8 +214,15 @@ class Fenetre(QMainWindow):
         self.anglais.setText(textval1)
 
     def keyPressEvent(self):
-        mot_francais = self.textEdit.toPlainText()
-        trad = arbre_fr_to_en.recherche_mot(mot_francais)
+        langue = self.francais.text().lower()
+        arbre = None
+        if langue =='français':
+            arbre = arbre_fr_to_en
+        if langue == 'anglais':
+            arbre = arbre_en_to_fr
+        mot= self.textEdit.toPlainText()
+        trad = arbre.recherche_mot(mot,langue)
+        print(mot,trad)
         self.textEdit1.setText(trad)
 
     def ajout_mot(self):
