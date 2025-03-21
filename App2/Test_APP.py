@@ -19,15 +19,20 @@ class Noeud:
 class ArbreBinaire:
     def __init__(self):
         self.racine = None
+        self.langue = None
 
-    def insertion(self, tuples_mots ):
+    def insertion(self, tuples_mots,langue):
+        if langue == 'anglais':
+            self.langue = 1
+        if langue == 'francais':
+            self.langue = 0
         if self.racine is None:
             self.racine = Noeud(tuples_mots)
         else:
-            self.insertion_rec(self.racine,tuples_mots)
+            self.insertion_rec(self.racine,tuples_mots, self.langue)
 
-    def insertion_rec(self, noeud,  tuples_mots):
-        if  tuples_mots[0] < noeud.mot[0]:
+    def insertion_rec(self, noeud,  tuples_mots, langue):
+        if  tuples_mots[langue] < noeud.mot[langue]:
             if noeud.enfant_gauche is None:
                 noeud.enfant_gauche = Noeud(tuples_mots)
             else:
@@ -38,18 +43,22 @@ class ArbreBinaire:
             else:
                 self.insertion_rec(noeud.enfant_droite,tuples_mots)
 
-    def recherche_mot(self, mot_fr):
-        return self.recherche_mot_rec(self.racine, mot_fr)
+    def recherche_mot(self, mot, langue):
+        if langue == 'anglais':
+            self.langue = 1
+        if langue == 'francais':
+            self.langue = 0
+        return self.recherche_mot_rec(self.racine, mot)
 
-    def recherche_mot_rec(self, noeud, mot_fr):
+    def recherche_mot_rec(self, noeud, mot,langue):
         if noeud is None:
             return None
-        if noeud.mot[0] == mot_fr:
-            return noeud.mot[1]
-        elif mot_fr < noeud.mot[0]:
-            return self.recherche_mot_rec(noeud.enfant_gauche, mot_fr)
+        if noeud.mot[langue] == mot:
+            return noeud.mot[langue-1]
+        elif mot < noeud.mot[langue]:
+            return self.recherche_mot_rec(noeud.enfant_gauche, mot)
         else:
-            return self.recherche_mot_rec(noeud.enfant_droite, mot_fr)
+            return self.recherche_mot_rec(noeud.enfant_droite, mot)
 
 
     # Fonction récursive pour afficher les noeuds avec un espacement (niveau de profondeur)
@@ -90,7 +99,7 @@ def ouverture_fichier(nom_fichier):
                 print(f"Ligne ignorée (mal formatée) : {row}")
     return fichier
 
-def creation_arbre_aleatoire():
+def creation_arbre_aleatoire(langue):
     arbre=ArbreBinaire()
     liste_mot= ouverture_fichier("test_APP2.csv")
     while len(liste_mot) > 0: 
@@ -99,40 +108,37 @@ def creation_arbre_aleatoire():
         else:
             nb_aleatoire = 0 
         mot=liste_mot[nb_aleatoire]
-        arbre.insertion(mot)
+        arbre.insertion(mot,langue)
         liste_mot.pop(nb_aleatoire)
     arbre.enregistrer_arbre()
 
-def construire_arbre_recursif(liste, arbre):
+def construire_arbre_recursif(liste, arbre, langue):
     if not liste:
         return
 
     milieu = len(liste) // 2
-    arbre.insertion(liste[milieu])
+    arbre.insertion(liste[milieu],langue)
     #print(liste[milieu])
 
     # On répète pour les sous-listes gauche et droite
     construire_arbre_recursif(liste[:milieu], arbre)
     construire_arbre_recursif(liste[milieu+1:], arbre)
 
-def creation_arbre_complet(nom_fichier):
+def creation_arbre_complet(nom_fichier,langue):
     arbre = ArbreBinaire()
     liste_mot = ouverture_fichier(nom_fichier)
 
     # Trie la liste si nécessaire pour avoir un arbre équilibré
     liste_mot.sort()
 
-    construire_arbre_recursif(liste_mot, arbre)
+    construire_arbre_recursif(liste_mot, arbre,langue)
 
     #arbre.enregistrer_arbre()
     return arbre
 
 
-arbre_fr_to_en = creation_arbre_complet('Trad-final.csv')
-
-
-
-#Importations
+arbre_fr_to_en = creation_arbre_complet('Trad-final.csv','francais')
+arbre_en_to_fr = creation_arbre_complet('Trad-final.csv','anglais')
 
 
 # Définir la fenêtre principale
