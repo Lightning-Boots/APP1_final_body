@@ -2,6 +2,7 @@
 import csv
 import random
 import sys
+import chardet
 from PyQt5.QtWidgets import QApplication, QMainWindow, QTextEdit, QLabel, QPushButton, QVBoxLayout, QWidget, QFileDialog,QHBoxLayout
 from PyQt5.QtCore import QCoreApplication, Qt, QSize
 from PyQt5.QtGui import QIcon
@@ -49,7 +50,7 @@ class ArbreBinaire:
             return self.recherche_mot_rec(noeud.enfant_gauche, mot_fr)
         else:
             return self.recherche_mot_rec(noeud.enfant_droite, mot_fr)
-        
+
 
     # Fonction récursive pour afficher les noeuds avec un espacement (niveau de profondeur)
     def enregistrer_arbre(self):
@@ -67,19 +68,31 @@ class ArbreBinaire:
             fichier.write("   " * niveau + f"{noeud.mot[0]}: {noeud.mot[1]}\n")
             if noeud.enfant_gauche is not None:
                 self.enregistrer_rec(noeud.enfant_gauche, niveau + 1, fichier)
-
 #Création de l'arbre à partie de notre dossier CSV
+def detecter_encodage(nom_fichier):
+    """ Détecte automatiquement l'encodage du fichier """
+    with open(f"App2\{nom_fichier}", 'rb') as f:
+        resultat = chardet.detect(f.read())
+    return resultat['encoding']
+
 def ouverture_fichier(nom_fichier):
-    with open(nom_fichier,newline='') as csvfile:
-        reader = csv.reader(csvfile,delimiter=';')
+    """ Ouvre un fichier CSV peu importe son encodage """
+    encodage = detecter_encodage(nom_fichier)
+    print(f"Encodage détecté : {encodage}")
+
+    with open(f"App2\{nom_fichier}", newline='', encoding=encodage, errors="replace") as csvfile:
+        reader = csv.reader(csvfile, delimiter=';')
         fichier = []
         for row in reader:
-            fichier.append(tuple(row))
+            if len(row) == 2:
+                fichier.append(tuple(row))
+            else:
+                print(f"Ligne ignorée (mal formatée) : {row}")
     return fichier
 
-def creation_arbre():
+def creation_arbre_aleatoire():
     arbre=ArbreBinaire()
-    liste_mot= ouverture_fichier("APP1_final_body\App2/test_APP2.csv")
+    liste_mot= ouverture_fichier("test_APP2.csv")
     while len(liste_mot) > 0: 
         if len(liste_mot) > 1:
             nb_aleatoire = random.randint(0, len(liste_mot) - 1)  # Plage corrigée
@@ -89,8 +102,35 @@ def creation_arbre():
         arbre.insertion(mot)
         liste_mot.pop(nb_aleatoire)
     arbre.enregistrer_arbre()
-       
-creation_arbre() 
+
+def construire_arbre_recursif(liste, arbre):
+    if not liste:
+        return
+
+    milieu = len(liste) // 2
+    arbre.insertion(liste[milieu])
+    #print(liste[milieu])
+
+    # On répète pour les sous-listes gauche et droite
+    construire_arbre_recursif(liste[:milieu], arbre)
+    construire_arbre_recursif(liste[milieu+1:], arbre)
+
+def creation_arbre_complet(nom_fichier):
+    arbre = ArbreBinaire()
+    liste_mot = ouverture_fichier(nom_fichier)
+
+    # Trie la liste si nécessaire pour avoir un arbre équilibré
+    liste_mot.sort()
+
+    construire_arbre_recursif(liste_mot, arbre)
+
+    #arbre.enregistrer_arbre()
+    return arbre
+
+
+arbre_fr_to_en = creation_arbre_complet('Trad-final.csv')
+
+
 
 #Importations
 
@@ -102,12 +142,16 @@ class Fenetre(QMainWindow):
         # Titre de la fenêtre
         self.setWindowTitle("Traducteur")
 
-        self.box = QHBoxLayout()
+        self.box = QVBoxLayout()
 
-        self.box1 = QVBoxLayout()
+        self.box1 = QHBoxLayout()
         self.box.addLayout(self.box1)
 
-        self.box2 = QVBoxLayout()
+        self.box2 = QHBoxLayout()
+        self.box.addLayout(self.box2)
+
+        self.box3 = QHBoxLayout()
+        self.box.addLayout(self.box3)
 
         # Contenu de la fenêtre principale
         self.francais = QLabel("Français")
@@ -120,15 +164,26 @@ class Fenetre(QMainWindow):
         self.valider.clicked.connect(self.keyPressEvent)
 
         self.box1.addWidget(self.francais)
-        self.box1.addWidget(self.textEdit)
-        self.box1.addWidget(self.valider)
+        self.box2.addWidget(self.textEdit)
+        self.box3.addWidget(self.valider)
+
+        self.reverse = QPushButton()
+        self.reverse.clicked.connect(self.inverser)
+        self.reverse.setFixedSize(30, 30)
+        self.reverse.setIcon(QIcon("App2/fleche.png"))
+        self.reverse.setIconSize(QSize(30,30))
+        self.box1.addWidget(self.reverse)
+        
+        self.sup = QPushButton ('Supprimer')
+        self.box3.addWidget(self.sup)
+
 
         self.anglais = QLabel("Anglais")
         self.anglais.setAlignment(Qt.AlignCenter)
         self.anglais.setStyleSheet("background-color: #B3D9F1;font-size: 20px")
         self.textEdit1 = QTextEdit()
         self.textEdit1.setStyleSheet("font-size: 20px")
-        self.box2.addWidget(self.anglais)
+        self.box1.addWidget(self.anglais)
         self.box2.addWidget(self.textEdit1)
         self.textEdit1.setText("")
 
@@ -140,12 +195,13 @@ class Fenetre(QMainWindow):
         self.sup = QPushButton ('Supprimer')
         self.box2.addWidget(self.sup)
 
+        
         self.ajout = QPushButton('Ajouter un mot dans le dictionnaire')
-        self.box1.addWidget(self.ajout)
+        self.box3.addWidget(self.ajout)
         self.ajout.clicked.connect(self.ajout_mot)
 
         self.ajout1 = QPushButton('Ajouter un fichier dans le dictionnaire')
-        self.box2.addWidget(self.ajout1)
+        self.box3.addWidget(self.ajout1)
         self.ajout1.clicked.connect(self.ajout_fichier)
 
 
@@ -170,6 +226,9 @@ class Fenetre(QMainWindow):
             mot_francais = self.textEdit.toPlainText()
             self.textEdit1.setText(mot_francais)
             print("Bah noooonnn")
+        mot_francais = self.textEdit.toPlainText()
+        trad = arbre_fr_to_en.recherche_mot(mot_francais)
+        self.textEdit1.setText(trad)
 
     def ajout_mot(self):
         self.fenetre2 = Fenetre2()
@@ -194,19 +253,19 @@ class Fenetre(QMainWindow):
                     print(fichier)
                     self.fenetre=Fenetre_fichier()
                     self.fenetre.show()
-                
+
             except Exception as e:
                 self.fenetre=Fenetre_fichier()
                 self.fenetre.show()
-    
+
 # Fenêtre pour ajouter un mot
 class Fenetre2(QWidget):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Ajout")
-        
+
         self.boite = QHBoxLayout()
-    
+
         self.boite1 = QVBoxLayout()
         self.boite.addLayout(self.boite1)
 
@@ -249,7 +308,7 @@ class Fenetre_fichier(QWidget):
         super().__init__()
         self.setWindowTitle("Validation du téléchargement")
         self.resize(300,100)
-    
+
         self.label=QLabel(" Votre fichier a bien été ajouté au dictionnaire ",self)
         self.label.setAlignment(Qt.AlignCenter)
         self.label.move(20,40)
@@ -260,7 +319,7 @@ class Fenetre_erreur(QWidget):
         super().__init__()
         self.setWindowTitle("Message d'erreur")
         self.resize(300,100)
-    
+
         self.label=QLabel("Erreur lors de l'ouverture du fichier",self)
         self.label.setAlignment(Qt.AlignCenter)
         self.label.move(20,40)
