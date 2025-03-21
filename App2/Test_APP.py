@@ -226,7 +226,8 @@ class Fenetre(QMainWindow):
         self.textEdit1.setText(trad)
 
     def ajout_mot(self):
-        self.fenetre2 = Fenetre2()
+        texte_francais = self.francais.text()
+        self.fenetre2 = Fenetre2(texte_francais)
         self.fenetre2.show()
 
     def ajout_fichier(self):
@@ -255,24 +256,25 @@ class Fenetre(QMainWindow):
 
 # Fenêtre pour ajouter un mot
 class Fenetre2(QWidget):
-    def __init__(self):
+    def __init__(self,langue):
         super().__init__()
         self.setWindowTitle("Ajout")
+        self.langue=langue
 
-        self.boite = QHBoxLayout()
+        self.boite = QVBoxLayout()
 
-        self.boite1 = QVBoxLayout()
+        self.boite1 = QHBoxLayout()
         self.boite.addLayout(self.boite1)
+
+        self.boite2 = QHBoxLayout()
+        self.boite.addLayout(self.boite2)
 
         self.mot_francais = QLabel("Mot en français")
         self.mot_francais.setAlignment(Qt.AlignCenter)
         self.mot_anglais = QLabel("Mot en anglais")
         self.mot_anglais.setAlignment(Qt.AlignCenter)
         self.boite1.addWidget(self.mot_francais)
-        self.boite1.addWidget(self.mot_anglais)
-
-        self.boite2 = QVBoxLayout()
-        self.boite.addLayout(self.boite2)
+        self.boite2.addWidget(self.mot_anglais)
 
         self.textEdit = QTextEdit()
         self.textEdit.setStyleSheet("font-size: 20px")
@@ -283,7 +285,7 @@ class Fenetre2(QWidget):
         self.textEdit1.setFixedSize(300, 30)
         self.textEdit1.setText("")
 
-        self.boite2.addWidget(self.textEdit)
+        self.boite1.addWidget(self.textEdit)
         self.boite2.addWidget(self.textEdit1)
 
         self.valider = QPushButton('Valider')
@@ -293,9 +295,18 @@ class Fenetre2(QWidget):
         self.setLayout(self.boite)
 
     def ajout(self):
-        mot_francais = self.textEdit.toPlainText()
-        mot_anglais = self.textEdit1.toPlainText()
-        print((mot_francais,mot_anglais))
+        mot= self.textEdit.toPlainText()
+        recherche =arbre_fr_to_en.recherche_mot(mot,self.langue.lower())
+        if recherche == None:
+            mot_francais = self.textEdit.toPlainText()
+            mot_anglais = self.textEdit1.toPlainText()
+            arbre_fr_to_en.insertion((mot_francais,mot_anglais),"français")
+            arbre_en_to_fr.insertion((mot_francais,mot_anglais),"anglais")
+            self.close()
+        else:
+            self.label=QLabel("Ce mot est déjà dans le dictionnaire")
+            self.boite.addWidget(self.label)
+        
 
 #Fenetre de validation de téléchargement
 class Fenetre_fichier(QWidget):
