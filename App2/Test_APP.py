@@ -15,11 +15,68 @@ class Noeud:
         self.mot= tuples_mots
         self.enfant_gauche = None
         self.enfant_droite = None
+    
+    def get_fils_gauche(self):
+        return self.enfant_gauche
+    
+    def get_fils_droite(self):
+        return self.enfant_droite
+    
+    def get_etiquette(self):
+        return self.mot
+    
+    def get_traduction(self):
+        return self.traduction
 
 class ArbreBinaire:
     def __init__(self):
         self.racine = None
         self.langue = None
+        
+    def est_vide(self):
+        return self.racine is None
+ 
+    def est_feuille(self, noeud):
+        return noeud is not None and noeud.enfant_gauche is None and noeud.enfant_droite is None
+    
+    def hauteur_arbre(self, noeud):
+        if noeud is None:
+            return 0
+        if self.est_feuille(noeud):
+            return 1
+        return 1 + max(self.hauteur_arbre(noeud.enfant_gauche), self.hauteur_arbre(noeud.enfant_droite))
+    
+    def predecesseur(self, noeud):
+        if noeud is None:
+            return None
+        predecesseur = None
+        if noeud.enfant_gauche:
+            predecesseur = noeud.enfant_gauche
+            while predecesseur.enfant_droite:
+                predecesseur = predecesseur.enfant_droite
+            return predecesseur.mot[0]
+    
+    def successeur(self, noeud):
+        if noeud is None:
+            return None
+        successeur = None
+        if noeud.enfant_droite:
+            successeur = noeud.enfant_droite
+            while successeur.enfant_gauche:
+                successeur = successeur.enfant_gauche
+            return successeur.mot[0]
+
+    
+    def recherche_fr(self, noeud, mot):
+        if noeud is None:
+            return None
+        if noeud.mot[0] == mot:
+            return noeud
+        elif mot < noeud.mot[0]:
+            return self.recherche_fr(noeud.enfant_gauche, mot)
+        else:
+            return self.recherche_fr(noeud.enfant_droite, mot)
+
 
     def insertion(self, tuples_mots,langue):
         if langue == 'anglais':
@@ -77,6 +134,7 @@ class ArbreBinaire:
             fichier.write("   " * niveau + f"{noeud.mot[0]}: {noeud.mot[1]}\n")
             if noeud.enfant_gauche is not None:
                 self.enregistrer_rec(noeud.enfant_gauche, niveau + 1, fichier)
+
 #Création de l'arbre à partie de notre dossier CSV
 def detecter_encodage(nom_fichier):
     """ Détecte automatiquement l'encodage du fichier """
@@ -136,6 +194,20 @@ def creation_arbre_complet(nom_fichier,langue):
     #arbre.enregistrer_arbre()
     return arbre
 
+# TEST
+arbre=ArbreBinaire()
+arbre.insertion(("m","m"),"français")
+arbre.insertion(("g","g"),"français")
+arbre.insertion(("h","h"),"français")
+arbre.insertion(("i","i"),"français")
+arbre.insertion(("v","v"),"français")
+arbre.insertion(("x","x"),"français")
+arbre.insertion(("c","c"),"français")
+arbre.insertion(("b","b"),"français")
+arbre.insertion(("d","d"),"français")
+print('affichage successeur et predecesseur')
+print(arbre.successeur(arbre.recherche_fr(arbre.racine,"g")))
+print(arbre.predecesseur(arbre.recherche_fr(arbre.racine,"g")))
 
 arbre_fr_to_en = creation_arbre_complet('Trad-final.csv','français')
 arbre_en_to_fr = creation_arbre_complet('Trad-final.csv','anglais')
@@ -189,6 +261,7 @@ class Fenetre(QMainWindow):
         self.anglais.setStyleSheet("background-color: #B3D9F1;font-size: 20px")
         self.textEdit1 = QTextEdit()
         self.textEdit1.setStyleSheet("font-size: 20px")
+        self.textEdit1.setReadOnly(True)
         self.box1.addWidget(self.anglais)
         self.box2.addWidget(self.textEdit1)
         self.textEdit1.setText("")
@@ -201,6 +274,10 @@ class Fenetre(QMainWindow):
         self.ajout1 = QPushButton('Ajouter un fichier dans le dictionnaire')
         self.box3.addWidget(self.ajout1)
         self.ajout1.clicked.connect(self.ajout_fichier)
+
+        self.test1 = QPushButton('Test')
+        self.box3.addWidget(self.test1)
+        self.test1.clicked.connect(self.test)
 
 
         self.widget = QWidget()
@@ -251,8 +328,49 @@ class Fenetre(QMainWindow):
                     self.fenetre.show()
 
             except Exception as e:
-                self.fenetre=Fenetre_fichier()
+                self.fenetre=Fenetre_erreur()
                 self.fenetre.show()
+
+    def test(self):
+        self.fenetre=Fenetre_test()
+        self.fenetre.show()
+
+
+class Fenetre_test(QWidget):
+    def __init__(self):
+        super().__init__()
+        self.mot="juste"
+        self.hauteur = arbre_fr_to_en.hauteur_arbre( arbre_fr_to_en.racine)
+        self.noeud_arbre = arbre_fr_to_en.recherche_fr(arbre_fr_to_en.racine,self.mot)
+        self.predecesseur = arbre_fr_to_en.predecesseur(self.noeud_arbre)
+        self.succeseur = arbre_fr_to_en.successeur(self.noeud_arbre)
+        self.fils_gauche = self.noeud_arbre.get_fils_gauche()
+        if self.fils_gauche != None:
+            self.fils_gauche=self.fils_gauche.mot[0]
+        self.fils_droite = self.noeud_arbre.get_fils_droite()
+        if self.fils_droite != None:
+            self.fils_droite=self.fils_droite.mot[0]
+
+        self.box=QVBoxLayout()
+
+        self.label=QLabel(f"Hauteur : {self.hauteur}")
+        self.label5=QLabel(f"Mot étudié : {self.mot}")
+        self.label1=QLabel(f"Prédecesseur: {self.predecesseur}")
+        self.label2=QLabel(f"Succeseur : {self.succeseur}")
+        self.label3=QLabel(f"Fils gauche : {self.fils_gauche}")
+        self.label4=QLabel(f"Fils droite : {self.fils_droite}")
+
+        self.box.addWidget(self.label)
+        self.box.addWidget(self.label5)
+        self.box.addWidget(self.label1)
+        self.box.addWidget(self.label2)
+        self.box.addWidget(self.label3)
+        self.box.addWidget(self.label4)
+        
+       
+        self.setLayout(self.box)
+
+
 
 # Fenêtre pour ajouter un mot
 class Fenetre2(QWidget):
@@ -269,19 +387,21 @@ class Fenetre2(QWidget):
         self.boite2 = QHBoxLayout()
         self.boite.addLayout(self.boite2)
 
-        self.mot_francais = QLabel("Mot en français")
+        self.mot_francais = QLabel("Mot en français:")
+        self.mot_francais.setStyleSheet("font-size: 16px")
         self.mot_francais.setAlignment(Qt.AlignCenter)
-        self.mot_anglais = QLabel("Mot en anglais")
+        self.mot_anglais = QLabel("Mot en anglais:")
+        self.mot_anglais.setStyleSheet("font-size: 16px")
         self.mot_anglais.setAlignment(Qt.AlignCenter)
         self.boite1.addWidget(self.mot_francais)
         self.boite2.addWidget(self.mot_anglais)
 
         self.textEdit = QTextEdit()
-        self.textEdit.setStyleSheet("font-size: 20px")
+        self.textEdit.setStyleSheet("font-size: 16px")
         self.textEdit.setFixedSize(300, 30)
         self.textEdit.setText("")
         self.textEdit1 = QTextEdit()
-        self.textEdit1.setStyleSheet("font-size: 20px")
+        self.textEdit1.setStyleSheet("font-size: 16px")
         self.textEdit1.setFixedSize(300, 30)
         self.textEdit1.setText("")
 
@@ -305,6 +425,7 @@ class Fenetre2(QWidget):
             self.close()
         else:
             self.label=QLabel("Ce mot est déjà dans le dictionnaire")
+            self.label.setStyleSheet("font-size: 16px; color: red;")
             self.boite.addWidget(self.label)
         
 
