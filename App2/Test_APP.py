@@ -85,7 +85,6 @@ def detecter_encodage(nom_fichier):
     return resultat['encoding']
 
 def ouverture_fichier(nom_fichier):
-<<<<<<< HEAD
     with open(f'App2/{nom_fichier}',newline='') as csvfile:
         reader = csv.reader(csvfile,delimiter=';')
 =======
