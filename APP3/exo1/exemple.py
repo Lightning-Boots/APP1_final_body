@@ -13,3 +13,7 @@ graph = {'3': ['6', '2',"1"],
          '5': ['2'],
          '4': ['2'],
          '1': ['3']}
+
+
+''' le 2 et 1 sont deux leaders les plus suivit 
+
