@@ -1,7 +1,6 @@
 # définir le plateau de jeu
-n=int(input("nombre d'allumettes"))
-board = ["|" for i in range(n)]
-print(board)
+
+
 
 # L'ordinateur joue aléatoirement
 import random
@@ -25,8 +24,9 @@ def play_random_move_V2(board):
 
 
 
-
-a, newboard = play_random_move(board)
+board = ["|" for i in range(4)]
+print(board)
+a, newboard = play_random_move_V2(board)
 print(a, newboard)
 a, newboard1 = play_random_move(newboard)
 print(a, newboard1)
@@ -51,9 +51,12 @@ class Board:
     return len(self.board) == 0
   
   
+<<<<<<< HEAD:APP1/Elagage/Partie1.py
   ##def play_random_move(self):
     if is_game_over(self)==False:
         a = random.randint(1, 3)
         return a, self.board[a:]
     else:
       return "Game Over"
+=======
+>>>>>>> 16:Partie1.py
