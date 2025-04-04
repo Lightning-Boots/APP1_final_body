@@ -3,7 +3,7 @@
 import csv
 import random
 import sys
-#import chardet
+import chardet
 import shutil
 import os
 import pickle
